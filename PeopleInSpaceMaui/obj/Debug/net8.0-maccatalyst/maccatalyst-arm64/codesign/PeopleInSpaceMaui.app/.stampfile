@@ -1,0 +1,1 @@
+-v --force --timestamp=none --sign - --entitlements /Users/richardwoollcott/Projects/appmilla_github/PeopleInSpace_MAUI/PeopleInSpaceMaui/obj/Debug/net8.0-maccatalyst/maccatalyst-arm64/Entitlements.xcent /Users/richardwoollcott/Projects/appmilla_github/PeopleInSpace_MAUI/PeopleInSpaceMaui/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/PeopleInSpaceMaui.app
