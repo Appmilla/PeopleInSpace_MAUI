@@ -1,23 +1,15 @@
-﻿namespace PeopleInSpaceMaui;
+﻿using PeopleInSpaceMaui.ViewModels;
+using ReactiveUI;
 
-public partial class MainPage : ContentPage
+namespace PeopleInSpaceMaui;
+
+
+public partial class MainPage : ReactiveUI.Maui.ReactiveContentPage<MainPageViewModel>
 {
-    int count = 0;
-
-    public MainPage()
+    public MainPage(MainPageViewModel viewModel)
     {
+        ViewModel = viewModel;
         InitializeComponent();
-    }
-
-    private void OnCounterClicked(object sender, EventArgs e)
-    {
-        count++;
-
-        if (count == 1)
-            CounterBtn.Text = $"Clicked {count} time";
-        else
-            CounterBtn.Text = $"Clicked {count} times";
-
-        SemanticScreenReader.Announce(CounterBtn.Text);
+        this.WhenActivated(_ => { });
     }
 }
