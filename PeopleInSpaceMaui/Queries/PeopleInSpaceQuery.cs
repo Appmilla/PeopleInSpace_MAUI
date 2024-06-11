@@ -13,50 +13,50 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 public interface IPeopleInSpaceQuery
-    {
-        bool IsBusy { get; set; }
+{
+    bool IsBusy { get; set; }
 
-        IObservable<ICollection<CrewModel>> GetCrew(bool forceRefresh = false);
+    IObservable<ICollection<CrewModel>> GetCrew(bool forceRefresh = false);
+}
+
+public class PeopleInSpaceQuery : ReactiveObject, IPeopleInSpaceQuery
+{
+    readonly ISchedulerProvider _schedulerProvider;
+    readonly ISpaceXApi _spaceXApi;
+
+    [Reactive]
+    public bool IsBusy { get; set; }
+
+    List<CrewModel> _crew = new List<CrewModel>();
+
+    public PeopleInSpaceQuery(ISchedulerProvider schedulerProvider,
+        ISpaceXApi spaceXApi)
+    {
+        _schedulerProvider = schedulerProvider;
+        _spaceXApi = spaceXApi;
     }
 
-    public class PeopleInSpaceQuery : ReactiveObject, IPeopleInSpaceQuery
+    public IObservable<ICollection<CrewModel>> GetCrew(bool forceRefresh = false)
     {
-        readonly ISchedulerProvider _schedulerProvider;
-        readonly ISpaceXApi _spaceXApi;
-
-        [Reactive]
-        public bool IsBusy { get; set; }
-
-        List<CrewModel> _crew = new List<CrewModel>();
-
-        public PeopleInSpaceQuery(ISchedulerProvider schedulerProvider,
-            ISpaceXApi spaceXApi)
+        return Observable.Create<ICollection<CrewModel>>(async observer =>
         {
-            _schedulerProvider = schedulerProvider;
-            _spaceXApi = spaceXApi;
-        }
+            var results = await GetCrewAsync(forceRefresh).ConfigureAwait(false);
 
-        public IObservable<ICollection<CrewModel>> GetCrew(bool forceRefresh = false)
-        {
-            return Observable.Create<ICollection<CrewModel>>(async observer =>
-            {
-                var results = await GetCrewAsync(forceRefresh).ConfigureAwait(false);
+            observer.OnNext(results);
 
-                observer.OnNext(results);
+        }).SubscribeOn(_schedulerProvider.MainThread);
+    }
 
-            }).SubscribeOn(_schedulerProvider.MainThread);
-        }
+    async Task<ICollection<CrewModel>> GetCrewAsync(bool forceRefresh = false)
+    {
+        IsBusy = true;
 
-        async Task<ICollection<CrewModel>> GetCrewAsync(bool forceRefresh = false)
-        {
-            IsBusy = true;
+        var crewJson = await  _spaceXApi.GetAllCrew().ConfigureAwait(false);
 
-            var crewJson = await  _spaceXApi.GetAllCrew().ConfigureAwait(false);
-
-            _crew = CrewModel.FromJson(crewJson).ToList();
+        _crew = CrewModel.FromJson(crewJson).ToList();
                         
-            IsBusy = false;
+        IsBusy = false;
 
-            return _crew;
-        }
+        return _crew;
     }
+}

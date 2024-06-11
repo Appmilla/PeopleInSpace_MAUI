@@ -15,9 +15,9 @@ using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
-public class MainPageViewModel : ReactiveObject
+    public class MainPageViewModel : ReactiveObject
     {
-        ISchedulerProvider _schedulerProvider;
+        readonly ISchedulerProvider _schedulerProvider;
 
         IPeopleInSpaceQuery _peopleInSpaceQuery;
 
@@ -27,7 +27,7 @@ public class MainPageViewModel : ReactiveObject
        
         [ObservableAsProperty]
         // ReSharper disable once UnassignedGetOnlyAutoProperty
-        public bool IsBusy { get; }
+        public bool IsRefreshing { get; }
 
         public ReactiveCommand<Unit, ICollection<CrewModel>> RefreshCommand { get; set; }
 
@@ -53,12 +53,12 @@ public class MainPageViewModel : ReactiveObject
 
             this.WhenAnyValue(x => x._peopleInSpaceQuery.IsBusy)
                 .ObserveOn(_schedulerProvider.MainThread)
-                .ToPropertyEx(this, x => x.IsBusy, scheduler: _schedulerProvider.MainThread);
+                .ToPropertyEx(this, x => x.IsRefreshing, scheduler: _schedulerProvider.MainThread);
            
             RefreshCommand = ReactiveCommand.CreateFromObservable(
                 () => _peopleInSpaceQuery.GetCrew(false),
                 //this.WhenAnyValue(x => x.IsBusy).Select(x => !x),
-                outputScheduler: _schedulerProvider.MainThread); // If ThreadPool is used here you get a UIKit Main thread exception on iOS
+                outputScheduler: _schedulerProvider.MainThread); 
             RefreshCommand.ThrownExceptions.Subscribe(Crew_OnError);
             RefreshCommand.Subscribe(Crew_OnNext);
 
