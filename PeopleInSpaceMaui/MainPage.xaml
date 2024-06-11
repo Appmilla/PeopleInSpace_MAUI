@@ -47,7 +47,7 @@
                                            Grid.Column="0"
                                            Grid.RowSpan="2"
                                            Source="{Binding Image}"
-                                           Aspect="AspectFit"
+                                           Aspect="AspectFill"
                                            HeightRequest="150"
                                            WidthRequest="150"
                                            Margin="0" />
