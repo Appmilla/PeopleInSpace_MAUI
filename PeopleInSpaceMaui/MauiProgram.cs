@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Akavache;
+using Microsoft.Extensions.Logging;
 using PeopleInSpaceMaui.Apis;
-using PeopleInSpaceMaui.Queries;
 using PeopleInSpaceMaui.Reactive;
+using PeopleInSpaceMaui.Repositories;
 using PeopleInSpaceMaui.ViewModels;
 using Refit;
 
@@ -11,6 +12,8 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
+        Akavache.Registrations.Start("PeopleInSpace");
+
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
@@ -20,9 +23,11 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
         
+        builder.Services.AddSingleton<IBlobCache>(BlobCache.LocalMachine);
+        
         builder.Services.AddTransient<MainPage>();
         builder.Services.AddScoped<MainPageViewModel>();
-        builder.Services.AddSingleton<IPeopleInSpaceQuery, PeopleInSpaceQuery>();
+        builder.Services.AddSingleton<ICrewRepository, CrewRepository>();
         builder.Services.AddSingleton<ISchedulerProvider, SchedulerProvider>();
         builder.Services.AddRefitClient<ISpaceXApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri("https://api.spacexdata.com/v4"));
 

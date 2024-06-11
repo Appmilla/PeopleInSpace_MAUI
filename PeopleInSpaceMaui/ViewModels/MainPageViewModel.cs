@@ -1,37 +1,33 @@
 using DynamicData;
 using DynamicData.Binding;
 using PeopleInSpaceMaui.Models;
-using PeopleInSpaceMaui.Queries;
 using PeopleInSpaceMaui.Reactive;
-
-namespace PeopleInSpaceMaui.ViewModels;
-
+using PeopleInSpaceMaui.Repositories;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
+namespace PeopleInSpaceMaui.ViewModels;
+
     public class MainPageViewModel : ReactiveObject
     {
         readonly ISchedulerProvider _schedulerProvider;
 
-        IPeopleInSpaceQuery _peopleInSpaceQuery;
+        private readonly ICrewRepository _crewRepository;
 
         [Reactive]
         public string Greeting { get; set; }
 
        
         [ObservableAsProperty]
-        // ReSharper disable once UnassignedGetOnlyAutoProperty
         public bool IsRefreshing { get; }
+       
+        public ReactiveCommand<Unit, ICollection<CrewModel>?> RefreshCommand { get; set; }
 
-        public ReactiveCommand<Unit, ICollection<CrewModel>> RefreshCommand { get; set; }
-
-        ReadOnlyObservableCollection<CrewModel> _crew;
+        private ReadOnlyObservableCollection<CrewModel> _crew;
 
         public ReadOnlyObservableCollection<CrewModel> Crew
         {
@@ -41,23 +37,22 @@ using System.Reactive.Linq;
 
         private static readonly Func<CrewModel, string> KeySelector = crew => crew.Name;
         readonly SourceCache<CrewModel, string> _crewCache = new SourceCache<CrewModel, string>(KeySelector);
-
-
+        
         public MainPageViewModel(ISchedulerProvider schedulerProvider,
-            IPeopleInSpaceQuery peopleInSpaceQuery)
+            ICrewRepository crewRepository)
         {
             _schedulerProvider = schedulerProvider;
-            _peopleInSpaceQuery = peopleInSpaceQuery;
+            _crewRepository = crewRepository;
 
-            Greeting = "People In Space";
+            Greeting = "People In Space Maui";
 
-            this.WhenAnyValue(x => x._peopleInSpaceQuery.IsBusy)
+            this.WhenAnyValue(x => x._crewRepository.IsBusy)
                 .ObserveOn(_schedulerProvider.MainThread)
                 .ToPropertyEx(this, x => x.IsRefreshing, scheduler: _schedulerProvider.MainThread);
            
             RefreshCommand = ReactiveCommand.CreateFromObservable(
-                () => _peopleInSpaceQuery.GetCrew(false),
-                //this.WhenAnyValue(x => x.IsBusy).Select(x => !x),
+                () => _crewRepository.GetCrew(false),
+                this.WhenAnyValue(x => x.IsRefreshing).Select(x => !x),
                 outputScheduler: _schedulerProvider.MainThread); 
             RefreshCommand.ThrownExceptions.Subscribe(Crew_OnError);
             RefreshCommand.Subscribe(Crew_OnNext);
@@ -73,11 +68,11 @@ using System.Reactive.Linq;
                 .Subscribe();
         }
 
-        void Crew_OnNext(ICollection<CrewModel> crew)
+        private void Crew_OnNext(ICollection<CrewModel>? crew)
         {
             try
             {
-                UpdateCrew(crew);
+                if (crew != null) UpdateCrew(crew);
             }
             catch (Exception exception)
             {
@@ -85,7 +80,7 @@ using System.Reactive.Linq;
             }
         }
 
-        void UpdateCrew(ICollection<CrewModel> crew)
+        private void UpdateCrew(ICollection<CrewModel> crew)
         {
             _schedulerProvider.MainThread.Schedule(_ =>
             {
@@ -97,7 +92,7 @@ using System.Reactive.Linq;
             });
         }
 
-        void Crew_OnError(Exception e)
+        private void Crew_OnError(Exception e)
         {
             
         }

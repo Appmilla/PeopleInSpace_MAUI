@@ -8,8 +8,13 @@
     Title="PeopleInSpaceMaui">
 
     <ShellContent
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />
+    
+    <!--
+    <ShellContent
         Title="People In Space"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
-
+-->
 </Shell>

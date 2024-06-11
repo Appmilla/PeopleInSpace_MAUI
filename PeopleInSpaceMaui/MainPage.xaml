@@ -7,7 +7,8 @@
     xmlns:viewModels="clr-namespace:PeopleInSpaceMaui.ViewModels"
     xmlns:models="clr-namespace:PeopleInSpaceMaui.Models"
     x:DataType="viewModels:MainPageViewModel"
-    x:Class="PeopleInSpaceMaui.MainPage">
+    x:Class="PeopleInSpaceMaui.MainPage"
+    Title="{Binding Greeting}">
     <maui:ReactiveContentPage.Resources>
         <ResourceDictionary>
             
