@@ -1,21 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<maui:ReactiveContentPage 
+<reactiveMaui:ReactiveContentPage 
     x:TypeArguments="viewModels:MainPageViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:maui="clr-namespace:ReactiveUI.Maui;assembly=ReactiveUI.Maui"
+    xmlns:reactiveMaui="clr-namespace:ReactiveUI.Maui;assembly=ReactiveUI.Maui"
     xmlns:viewModels="clr-namespace:PeopleInSpaceMaui.ViewModels"
     xmlns:models="clr-namespace:PeopleInSpaceMaui.Models"
     x:DataType="viewModels:MainPageViewModel"
-    x:Class="PeopleInSpaceMaui.MainPage"
+    x:Class="PeopleInSpaceMaui.Views.MainPage"
+    x:Name="MainPageView"
     Title="{Binding Greeting}">
-    <maui:ReactiveContentPage.Resources>
-        <ResourceDictionary>
-            
-        </ResourceDictionary>
-    </maui:ReactiveContentPage.Resources>
 
-    <RefreshView IsRefreshing="{Binding IsRefreshing}"
+    <RefreshView IsRefreshing="{Binding Path=BindingContext.IsRefreshing, Source={x:Reference MainPageView}}"
                  Command="{Binding RefreshCommand}">
         <ScrollView>
             <CollectionView ItemsSource="{Binding Crew}"
@@ -42,6 +38,11 @@
                                         <ColumnDefinition Width="160" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                            Command="{Binding Path=BindingContext.NavigateToDetailCommand, Source={x:Reference MainPageView}}" 
+                                            CommandParameter="{Binding .}" />
+                                    </Grid.GestureRecognizers>
                                     
                                     <Image Grid.Row="0"
                                            Grid.Column="0"
@@ -70,4 +71,4 @@
         </ScrollView>
     </RefreshView>
 
-</maui:ReactiveContentPage>
+</reactiveMaui:ReactiveContentPage>

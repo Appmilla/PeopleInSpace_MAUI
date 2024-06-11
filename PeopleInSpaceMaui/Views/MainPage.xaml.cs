@@ -1,7 +1,7 @@
 ﻿using PeopleInSpaceMaui.ViewModels;
 using ReactiveUI;
 
-namespace PeopleInSpaceMaui;
+namespace PeopleInSpaceMaui.Views;
 
 
 public partial class MainPage : ReactiveUI.Maui.ReactiveContentPage<MainPageViewModel>
@@ -10,6 +10,5 @@ public partial class MainPage : ReactiveUI.Maui.ReactiveContentPage<MainPageView
     {
         ViewModel = viewModel;
         InitializeComponent();
-        this.WhenActivated(_ => { });
     }
 }

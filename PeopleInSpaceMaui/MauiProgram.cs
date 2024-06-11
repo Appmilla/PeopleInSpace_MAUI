@@ -4,6 +4,7 @@ using PeopleInSpaceMaui.Apis;
 using PeopleInSpaceMaui.Reactive;
 using PeopleInSpaceMaui.Repositories;
 using PeopleInSpaceMaui.ViewModels;
+using PeopleInSpaceMaui.Views;
 using Refit;
 
 namespace PeopleInSpaceMaui;
@@ -27,6 +28,8 @@ public static class MauiProgram
         
         builder.Services.AddTransient<MainPage>();
         builder.Services.AddScoped<MainPageViewModel>();
+        builder.Services.AddTransient<DetailPage>();
+        builder.Services.AddScoped<DetailPageViewModel>();
         builder.Services.AddSingleton<ICrewRepository, CrewRepository>();
         builder.Services.AddSingleton<ISchedulerProvider, SchedulerProvider>();
         builder.Services.AddRefitClient<ISpaceXApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri("https://api.spacexdata.com/v4"));
