@@ -18,7 +18,7 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
     private readonly ICrewRepository _crewRepository;
     
     [Reactive]
-    public string Greeting { get; set; }
+    public string PageTitle { get; set; }
     
     [ObservableAsProperty]
     public bool IsRefreshing { get; }
@@ -46,7 +46,7 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
         _schedulerProvider = schedulerProvider;
         _crewRepository = crewRepository;
 
-        Greeting = "People In Space Maui";
+        PageTitle = "People In Space Maui";
 
         var crewSort = SortExpressionComparer<CrewModel>
             .Ascending(c => c.Name);
@@ -103,6 +103,7 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
 
     private void Crew_OnError(Exception e)
     {
+        
             
     }
     

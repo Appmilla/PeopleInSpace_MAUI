@@ -1,10 +1,12 @@
-﻿using Akavache;
+﻿using System.Reactive;
+using Akavache;
 using Microsoft.Extensions.Logging;
 using PeopleInSpaceMaui.Apis;
 using PeopleInSpaceMaui.Reactive;
 using PeopleInSpaceMaui.Repositories;
 using PeopleInSpaceMaui.ViewModels;
 using PeopleInSpaceMaui.Views;
+using ReactiveUI;
 using Refit;
 
 namespace PeopleInSpaceMaui;
@@ -15,6 +17,11 @@ public static class MauiProgram
     {
         Akavache.Registrations.Start("PeopleInSpace");
 
+        RxApp.DefaultExceptionHandler = new AnonymousObserver<Exception>(ex =>
+        {
+            App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
+        });
+        
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()

@@ -9,13 +9,13 @@
     x:DataType="viewModels:MainPageViewModel"
     x:Class="PeopleInSpaceMaui.Views.MainPage"
     x:Name="MainPageView"
-    Title="{Binding Greeting}">
+    Title="{Binding PageTitle}">
 
     <RefreshView IsRefreshing="{Binding Path=BindingContext.IsRefreshing, Source={x:Reference MainPageView}}"
                  Command="{Binding RefreshCommand}">
         <ScrollView>
             <CollectionView ItemsSource="{Binding Crew}"
-                            SelectionMode="Single"
+                            SelectionMode="None"
                             EmptyView="Please pull to refresh the view"
                             Margin="10">
                 <CollectionView.ItemsLayout>

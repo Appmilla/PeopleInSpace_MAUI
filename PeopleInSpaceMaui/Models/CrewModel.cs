@@ -1,3 +1,6 @@
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+
 namespace PeopleInSpaceMaui.Models;
 
 using System;
@@ -5,27 +8,34 @@ using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-public partial class CrewModel
+public partial class CrewModel : ReactiveObject
     {
         [JsonProperty("name")]
+        [Reactive]
         public string Name { get; set; }
 
         [JsonProperty("agency")]
+        [Reactive]
         public string Agency { get; set; }
 
         [JsonProperty("image")]
+        [Reactive]
         public Uri Image { get; set; }
 
         [JsonProperty("wikipedia")]
+        [Reactive]
         public Uri Wikipedia { get; set; }
 
         [JsonProperty("launches")]
+        [Reactive]
         public string[] Launches { get; set; }
 
         [JsonProperty("status")]
+        [Reactive]
         public Status Status { get; set; }
 
         [JsonProperty("id")]
+        [Reactive]
         public string Id { get; set; }
     }
 
@@ -34,11 +44,6 @@ public partial class CrewModel
     public partial class CrewModel
     {
         public static CrewModel[] FromJson(string json) => JsonConvert.DeserializeObject<CrewModel[]>(json, Converter.Settings);
-    }
-
-    public static class Serialize
-    {
-        public static string ToJson(this CrewModel[] self) => JsonConvert.SerializeObject(self, Converter.Settings);
     }
 
     internal static class Converter

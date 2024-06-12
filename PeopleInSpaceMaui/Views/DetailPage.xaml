@@ -7,7 +7,8 @@
     xmlns:reactiveMaui="clr-namespace:ReactiveUI.Maui;assembly=ReactiveUI.Maui"
     xmlns:viewModels="clr-namespace:PeopleInSpaceMaui.ViewModels"
     x:DataType="viewModels:DetailPageViewModel"
-    x:Class="PeopleInSpaceMaui.Views.DetailPage">
+    x:Class="PeopleInSpaceMaui.Views.DetailPage"
+    Title="{Binding PageTitle}">
     <ContentPage.Content>
         <ScrollView>
             <Grid Padding="0">
