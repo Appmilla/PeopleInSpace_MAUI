@@ -8,6 +8,7 @@ using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using PeopleInSpaceMaui.Navigation;
 
@@ -24,7 +25,9 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
     
     [ObservableAsProperty]
     public bool IsRefreshing { get; }
-       
+
+    private ReactiveCommand<Unit, ICollection<CrewModel>?> LoadCommand { get; set; }
+    
     public ReactiveCommand<Unit, ICollection<CrewModel>?> RefreshCommand { get; set; }
 
     public ReactiveCommand<CrewModel, Unit> NavigateToDetailCommand { get; private set; }
@@ -51,7 +54,7 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
         _navigationService = navigationService;
         
         PageTitle = "People In Space Maui";
-
+        
         var crewSort = SortExpressionComparer<CrewModel>
             .Ascending(c => c.Name);
 
@@ -66,11 +69,12 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
             .ObserveOn(_schedulerProvider.MainThread)
             .ToPropertyEx(this, x => x.IsRefreshing, scheduler: _schedulerProvider.MainThread);
         
-        this.WhenActivated(disposables =>
-        {
-            disposables.Add(crewSubscription);
-            disposables.Add(isRefreshingSubscription);
-        });
+        LoadCommand = ReactiveCommand.CreateFromObservable(
+            () => _crewRepository.GetCrew(true),
+            this.WhenAnyValue(x => x.IsRefreshing).Select(x => !x), 
+            outputScheduler: _schedulerProvider.MainThread); 
+        LoadCommand.ThrownExceptions.Subscribe(Crew_OnError);
+        LoadCommand.Subscribe(Crew_OnNext);
         
         RefreshCommand = ReactiveCommand.CreateFromObservable(
             () => _crewRepository.GetCrew(false),
@@ -80,6 +84,14 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
         RefreshCommand.Subscribe(Crew_OnNext);
         
         NavigateToDetailCommand = ReactiveCommand.Create<CrewModel>(NavigateToDetail);
+        
+        this.WhenActivated(disposables =>
+        {
+            disposables.Add(crewSubscription);
+            disposables.Add(isRefreshingSubscription);
+            
+            LoadCommand.Execute().Subscribe().DisposeWith(disposables);
+        });
     }
 
     private void Crew_OnNext(ICollection<CrewModel>? crew)

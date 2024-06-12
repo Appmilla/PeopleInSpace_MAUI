@@ -8,7 +8,13 @@ public partial class MainPage : ReactiveUI.Maui.ReactiveContentPage<MainPageView
 {
     public MainPage(MainPageViewModel viewModel)
     {
+        BindingContext = viewModel;
         ViewModel = viewModel;
+        
         InitializeComponent();
+        
+        this.WhenActivated(disposables =>
+        {
+        });
     }
 }
