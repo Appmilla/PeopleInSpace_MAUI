@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using PeopleInSpaceMaui.Navigation;
 
 namespace PeopleInSpaceMaui.ViewModels;
 
@@ -16,6 +17,7 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
 {
     readonly ISchedulerProvider _schedulerProvider;
     private readonly ICrewRepository _crewRepository;
+    private readonly INavigationService _navigationService;
     
     [Reactive]
     public string PageTitle { get; set; }
@@ -41,11 +43,13 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
     public ViewModelActivator Activator { get; } = new();
     
     public MainPageViewModel(ISchedulerProvider schedulerProvider,
-        ICrewRepository crewRepository)
+        ICrewRepository crewRepository,
+        INavigationService navigationService)
     {
         _schedulerProvider = schedulerProvider;
         _crewRepository = crewRepository;
-
+        _navigationService = navigationService;
+        
         PageTitle = "People In Space Maui";
 
         var crewSort = SortExpressionComparer<CrewModel>
@@ -114,6 +118,6 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
         var wikipedia = Uri.EscapeDataString(crewMember.Wikipedia.ToString());
 
         var route = $"DetailPage?name={name}&image={image}&wikipedia={wikipedia}";
-        Shell.Current.GoToAsync(route);
+        _navigationService.NavigateAsync(route);
     }
 }   

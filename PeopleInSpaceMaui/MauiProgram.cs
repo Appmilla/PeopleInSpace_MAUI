@@ -2,6 +2,7 @@
 using Akavache;
 using Microsoft.Extensions.Logging;
 using PeopleInSpaceMaui.Apis;
+using PeopleInSpaceMaui.Navigation;
 using PeopleInSpaceMaui.Reactive;
 using PeopleInSpaceMaui.Repositories;
 using PeopleInSpaceMaui.ViewModels;
@@ -39,6 +40,7 @@ public static class MauiProgram
         builder.Services.AddScoped<DetailPageViewModel>();
         builder.Services.AddSingleton<ICrewRepository, CrewRepository>();
         builder.Services.AddSingleton<ISchedulerProvider, SchedulerProvider>();
+        builder.Services.AddSingleton<INavigationService, NavigationService>();
         builder.Services.AddRefitClient<ISpaceXApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri("https://api.spacexdata.com/v4"));
 
 #if DEBUG
