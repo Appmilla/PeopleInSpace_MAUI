@@ -10,6 +10,7 @@ using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using PeopleInSpaceMaui.Extensions;
 using PeopleInSpaceMaui.Navigation;
 
 namespace PeopleInSpaceMaui.ViewModels;
@@ -119,8 +120,7 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
 
     private void Crew_OnError(Exception e)
     {
-        
-            
+        _navigationService.DisplayToast(e.Message).FireAndForgetSafeAsync();
     }
     
     private void NavigateToDetail(CrewModel crewMember)

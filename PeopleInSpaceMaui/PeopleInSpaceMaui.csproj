@@ -58,6 +58,7 @@
 
     <ItemGroup>
         <PackageReference Include="akavache" Version="10.0.1" />
+        <PackageReference Include="CommunityToolkit.Maui" Version="9.0.1" />
         <PackageReference Include="epj.RouteGenerator" Version="1.0.1" />
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)"/>

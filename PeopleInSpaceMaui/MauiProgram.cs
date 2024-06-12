@@ -10,6 +10,7 @@ using PeopleInSpaceMaui.ViewModels;
 using PeopleInSpaceMaui.Views;
 using ReactiveUI;
 using Refit;
+using CommunityToolkit.Maui;
 
 namespace PeopleInSpaceMaui;
 
@@ -28,6 +29,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
