@@ -1,5 +1,6 @@
 ﻿using System.Reactive;
 using Akavache;
+using epj.RouteGenerator;
 using Microsoft.Extensions.Logging;
 using PeopleInSpaceMaui.Apis;
 using PeopleInSpaceMaui.Navigation;
@@ -12,6 +13,7 @@ using Refit;
 
 namespace PeopleInSpaceMaui;
 
+[AutoRoutes("Page")]
 public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()

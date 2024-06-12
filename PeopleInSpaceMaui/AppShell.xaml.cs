@@ -8,6 +8,10 @@ public partial class AppShell : Shell
     {
         InitializeComponent();
         
-        Routing.RegisterRoute("DetailPage", typeof(DetailPage));
+        foreach (var route in Routes.RouteTypeMap)
+        {
+            Routing.RegisterRoute(route.Key, route.Value);
+        }
+
     }
 }

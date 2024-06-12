@@ -116,8 +116,8 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
         var name = Uri.EscapeDataString(crewMember.Name);
         var image = Uri.EscapeDataString(crewMember.Image.ToString());
         var wikipedia = Uri.EscapeDataString(crewMember.Wikipedia.ToString());
-
-        var route = $"DetailPage?name={name}&image={image}&wikipedia={wikipedia}";
+        
+        var route = $"{Routes.DetailPage}?name={name}&image={image}&wikipedia={wikipedia}";
         _navigationService.NavigateAsync(route);
     }
 }   
