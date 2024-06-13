@@ -21,7 +21,7 @@ public class CrewRepository(
     : ReactiveObject, ICrewRepository
 {
     private const string CrewCacheKey = "crew_cache_key";
-    private readonly TimeSpan _cacheLifetime = TimeSpan.FromMinutes(2);
+    private readonly TimeSpan _cacheLifetime = TimeSpan.FromDays(1);
 
     [Reactive]
     public bool IsBusy { get; set; }

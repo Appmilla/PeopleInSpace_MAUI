@@ -11,6 +11,8 @@ using PeopleInSpaceMaui.Views;
 using ReactiveUI;
 using Refit;
 using CommunityToolkit.Maui;
+using PeopleInSpaceMaui.Alerts;
+using PeopleInSpaceMaui.Network;
 
 namespace PeopleInSpaceMaui;
 
@@ -45,8 +47,14 @@ public static class MauiProgram
         builder.Services.AddSingleton<ICrewRepository, CrewRepository>();
         builder.Services.AddSingleton<ISchedulerProvider, SchedulerProvider>();
         builder.Services.AddSingleton<INavigationService, NavigationService>();
+        builder.Services.AddSingleton<IUserAlerts, UserAlerts>();
         builder.Services.AddRefitClient<ISpaceXApi>().ConfigureHttpClient(c => c.BaseAddress = new Uri("https://api.spacexdata.com/v4"));
-
+        builder.Services.AddSingleton<IConnectivity>(provider => Connectivity.Current);
+        builder.Services.AddSingleton<INetworkStatusObserver, NetworkStatusObserver>();
+        
+        //builder.Services.AddSingleton<INetworkStatusObserver>(provider => 
+          //  new NetworkStatusObserver(Connectivity.Current));
+        
 #if DEBUG
         builder.Logging.AddDebug();
 #endif

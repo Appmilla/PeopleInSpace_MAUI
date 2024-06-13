@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using PeopleInSpaceMaui.Alerts;
 using PeopleInSpaceMaui.Extensions;
 using PeopleInSpaceMaui.Navigation;
 
@@ -19,6 +20,7 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
     readonly ISchedulerProvider _schedulerProvider;
     private readonly ICrewRepository _crewRepository;
     private readonly INavigationService _navigationService;
+    private readonly IUserAlerts _userAlerts;
     
     [Reactive]
     public string PageTitle { get; set; }
@@ -45,11 +47,13 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
     
     public MainPageViewModel(ISchedulerProvider schedulerProvider,
         ICrewRepository crewRepository,
-        INavigationService navigationService)
+        INavigationService navigationService,
+        IUserAlerts userAlerts)
     {
         _schedulerProvider = schedulerProvider;
         _crewRepository = crewRepository;
         _navigationService = navigationService;
+        _userAlerts = userAlerts;
         
         PageTitle = "People In Space Maui";
         
@@ -105,7 +109,7 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
 
     private void Crew_OnError(Exception e)
     {
-        _navigationService.DisplayToast(e.Message).FireAndForgetSafeAsync();
+        _userAlerts.ShowToast(e.Message).FireAndForgetSafeAsync();
     }
     
     private void NavigateToDetail(CrewModel crewMember)

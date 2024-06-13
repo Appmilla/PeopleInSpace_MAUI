@@ -14,7 +14,7 @@
 <RefreshView IsRefreshing="{Binding Path=IsRefreshing}"
              Command="{Binding LoadCommand}">
         <RefreshView.CommandParameter>
-            <sys:Boolean>False</sys:Boolean>
+            <sys:Boolean>True</sys:Boolean>
         </RefreshView.CommandParameter>
         <ScrollView>
             <CollectionView ItemsSource="{Binding Crew}"
