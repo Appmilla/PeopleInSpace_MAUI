@@ -14,7 +14,7 @@
 <RefreshView IsRefreshing="{Binding Path=IsRefreshing}"
              Command="{Binding LoadCommand}">
         <RefreshView.CommandParameter>
-            <sys:Boolean>True</sys:Boolean>
+            <sys:Boolean>False</sys:Boolean>
         </RefreshView.CommandParameter>
         <ScrollView>
             <CollectionView ItemsSource="{Binding Crew}"
@@ -55,14 +55,15 @@
                                            HeightRequest="150"
                                            WidthRequest="150"
                                            Margin="0" />
-                                    <Label Grid.Column="1"
+                                    <Label Grid.Row="0"
+                                           Grid.Column="1"
                                            Text="{Binding Name}"
                                            FontAttributes="Bold"
                                            FontSize="18"
                                            VerticalOptions="Start"
                                            Margin="10,10,10,0" />
-                                    <Label Grid.Column="1"
-                                           Grid.Row="1"
+                                    <Label Grid.Row="1"
+                                           Grid.Column="1"
                                            Text="{Binding Agency}"
                                            FontSize="16"
                                            Margin="10,0,10,10" />

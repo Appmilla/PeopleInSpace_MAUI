@@ -39,9 +39,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<IBlobCache>(BlobCache.LocalMachine);
         
         builder.Services.AddTransient<MainPage>();
-        builder.Services.AddTransient<MainPageViewModel>();
+        builder.Services.AddScoped<MainPageViewModel>();
         builder.Services.AddTransient<DetailPage>();
-        builder.Services.AddTransient<DetailPageViewModel>();
+        builder.Services.AddScoped<DetailPageViewModel>();
         builder.Services.AddSingleton<ICrewRepository, CrewRepository>();
         builder.Services.AddSingleton<ISchedulerProvider, SchedulerProvider>();
         builder.Services.AddSingleton<INavigationService, NavigationService>();
