@@ -52,9 +52,6 @@ public static class MauiProgram
         builder.Services.AddSingleton<IConnectivity>(provider => Connectivity.Current);
         builder.Services.AddSingleton<INetworkStatusObserver, NetworkStatusObserver>();
         
-        //builder.Services.AddSingleton<INetworkStatusObserver>(provider => 
-          //  new NetworkStatusObserver(Connectivity.Current));
-        
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
