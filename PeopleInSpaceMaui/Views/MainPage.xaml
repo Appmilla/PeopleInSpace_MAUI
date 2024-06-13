@@ -6,13 +6,16 @@
     xmlns:reactiveMaui="clr-namespace:ReactiveUI.Maui;assembly=ReactiveUI.Maui"
     xmlns:viewModels="clr-namespace:PeopleInSpaceMaui.ViewModels"
     xmlns:models="clr-namespace:PeopleInSpaceMaui.Models"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     x:DataType="viewModels:MainPageViewModel"
     x:Class="PeopleInSpaceMaui.Views.MainPage"
     x:Name="MainPageView"
     Title="{Binding PageTitle}">
-
-    <RefreshView IsRefreshing="{Binding Path=BindingContext.IsRefreshing, Source={x:Reference MainPageView}}"
-                 Command="{Binding RefreshCommand}">
+<RefreshView IsRefreshing="{Binding Path=IsRefreshing}"
+             Command="{Binding LoadCommand}">
+        <RefreshView.CommandParameter>
+            <sys:Boolean>True</sys:Boolean>
+        </RefreshView.CommandParameter>
         <ScrollView>
             <CollectionView ItemsSource="{Binding Crew}"
                             SelectionMode="None"

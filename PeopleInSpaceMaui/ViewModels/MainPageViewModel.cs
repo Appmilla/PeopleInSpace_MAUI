@@ -7,7 +7,6 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
 using System.Reactive;
-using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using PeopleInSpaceMaui.Extensions;
@@ -26,11 +25,9 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
     
     [ObservableAsProperty]
     public bool IsRefreshing { get; }
-
-    private ReactiveCommand<Unit, ICollection<CrewModel>?> LoadCommand { get; set; }
     
-    public ReactiveCommand<Unit, ICollection<CrewModel>?> RefreshCommand { get; set; }
-
+    public ReactiveCommand<bool, ICollection<CrewModel>?> LoadCommand { get; private set; }
+    
     public ReactiveCommand<CrewModel, Unit> NavigateToDetailCommand { get; private set; }
     
     private ReadOnlyObservableCollection<CrewModel> _crew;
@@ -66,35 +63,26 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
             .DisposeMany()                              
             .Subscribe();
         
-        var isRefreshingSubscription = this.WhenAnyValue(x => x._crewRepository.IsBusy)
-            .ObserveOn(_schedulerProvider.MainThread)
-            .ToPropertyEx(this, x => x.IsRefreshing, scheduler: _schedulerProvider.MainThread);
-        
-        LoadCommand = ReactiveCommand.CreateFromObservable(
-            () => _crewRepository.GetCrew(true),
+        LoadCommand = ReactiveCommand.CreateFromObservable<bool, ICollection<CrewModel>?>(
+            forceRefresh =>  _crewRepository.GetCrew(forceRefresh),
             this.WhenAnyValue(x => x.IsRefreshing).Select(x => !x), 
             outputScheduler: _schedulerProvider.MainThread); 
         LoadCommand.ThrownExceptions.Subscribe(Crew_OnError);
         LoadCommand.Subscribe(Crew_OnNext);
         
-        RefreshCommand = ReactiveCommand.CreateFromObservable(
-            () => _crewRepository.GetCrew(false),
-            this.WhenAnyValue(x => x.IsRefreshing).Select(x => !x), 
-            outputScheduler: _schedulerProvider.MainThread); 
-        RefreshCommand.ThrownExceptions.Subscribe(Crew_OnError);
-        RefreshCommand.Subscribe(Crew_OnNext);
-        
         NavigateToDetailCommand = ReactiveCommand.Create<CrewModel>(NavigateToDetail);
         
         this.WhenActivated(disposables =>
         {
-            disposables.Add(crewSubscription);
-            disposables.Add(isRefreshingSubscription);
+            this.WhenAnyValue(x => x._crewRepository.IsBusy)
+                .ObserveOn(_schedulerProvider.MainThread)
+                .ToPropertyEx(this, x => x.IsRefreshing, scheduler: _schedulerProvider.MainThread)
+                .DisposeWith(disposables);
             
-            LoadCommand.Execute().Subscribe().DisposeWith(disposables);
+            disposables.Add(crewSubscription);
         });
     }
-
+    
     private void Crew_OnNext(ICollection<CrewModel>? crew)
     {
         try
@@ -106,15 +94,12 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
             Crew_OnError(exception);
         }
     }
-
+    
     private void UpdateCrew(ICollection<CrewModel> crew)
     {
-        _schedulerProvider.MainThread.Schedule(_ =>
+        _crewCache.Edit(innerCache =>
         {
-            _crewCache.Edit(innerCache =>
-            {
-                innerCache.AddOrUpdate(crew);
-            });
+            innerCache.AddOrUpdate(crew);
         });
     }
 

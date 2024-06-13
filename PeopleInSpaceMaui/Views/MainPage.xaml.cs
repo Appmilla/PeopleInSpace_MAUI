@@ -17,4 +17,11 @@ public partial class MainPage : ReactiveUI.Maui.ReactiveContentPage<MainPageView
         {
         });
     }
+
+    protected override void OnAppearing()
+    {
+        ViewModel?.LoadCommand.Execute(false).Subscribe();
+        
+        base.OnAppearing();
+    }
 }

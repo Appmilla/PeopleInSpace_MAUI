@@ -41,7 +41,7 @@ public class CrewRepository(
                     fetchFunc: FetchAndCacheCrew,
                     absoluteExpiration: expiration)
                 .Do(_ => IsBusy = false);
-        }).SubscribeOn(schedulerProvider.MainThread);
+        }).SubscribeOn(schedulerProvider.ThreadPool);
     }
 
     private IObservable<ICollection<CrewModel>> FetchAndCacheCrew()
@@ -64,6 +64,6 @@ public class CrewRepository(
             {
                 IsBusy = false;
             }
-        }).SubscribeOn(schedulerProvider.MainThread);
+        }).SubscribeOn(schedulerProvider.ThreadPool);
     }
 }
