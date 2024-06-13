@@ -6,10 +6,10 @@ namespace PeopleInSpaceMaui;
 
 public partial class App : Application
 {
-    private INetworkStatusObserver _networkStatusObserver;
-    private IDisposable _networkStatusSubscription;
-    private IUserAlerts _userAlerts;
-    private IConnectivity _connectivity;
+    private readonly INetworkStatusObserver _networkStatusObserver;
+    private readonly IDisposable _networkStatusSubscription;
+    private readonly IUserAlerts _userAlerts;
+    private readonly IConnectivity _connectivity;
 
     private readonly TimeSpan _snackbarDuration = TimeSpan.FromSeconds(3);
     
@@ -18,15 +18,13 @@ public partial class App : Application
     public App(IServiceProvider serviceProvider)
     {
         InitializeComponent();
-
-        // Resolve the network status observer and navigation service from the DI container
+        
         _networkStatusObserver = serviceProvider.GetRequiredService<INetworkStatusObserver>();
         _userAlerts = serviceProvider.GetRequiredService<IUserAlerts>();
         _connectivity = serviceProvider.GetRequiredService<IConnectivity>();
         
         _networkStatusSubscription = _networkStatusObserver.Start();
         
-        // Subscribe to network changes and broadcast them
         _networkStatusObserver.ConnectivityNotifications.Subscribe(networkAccess =>
         {
             if (_currentNetworkAccess == networkAccess) return;
@@ -53,18 +51,7 @@ public partial class App : Application
     
     protected override void OnStart()
     {
-        // Handle when your app starts
         CheckInitialNetworkStatus();
-    }
-
-    protected override void OnSleep()
-    {
-        // Handle when your app sleeps
-    }
-
-    protected override void OnResume()
-    {
-        // Handle when your app resumes
     }
 
     protected override void CleanUp()
