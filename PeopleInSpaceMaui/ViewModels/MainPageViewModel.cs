@@ -17,7 +17,7 @@ namespace PeopleInSpaceMaui.ViewModels;
 
 public class MainPageViewModel : ReactiveObject, IActivatableViewModel
 {
-    readonly ISchedulerProvider _schedulerProvider;
+    private readonly ISchedulerProvider _schedulerProvider;
     private readonly ICrewRepository _crewRepository;
     private readonly INavigationService _navigationService;
     private readonly IUserAlerts _userAlerts;
@@ -28,7 +28,7 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
     [ObservableAsProperty]
     public bool IsRefreshing { get; }
     
-    public ReactiveCommand<bool, ICollection<CrewModel>?> LoadCommand { get; private set; }
+    public ReactiveCommand<bool, ICollection<CrewModel>?> LoadCommand { get; }
     
     public ReactiveCommand<CrewModel, Unit> NavigateToDetailCommand { get; private set; }
     
@@ -40,8 +40,8 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
         set => this.RaiseAndSetIfChanged(ref _crew, value);
     }
 
-    private static readonly Func<CrewModel, string> KeySelector = crew => crew.Name;
-    readonly SourceCache<CrewModel, string> _crewCache = new(KeySelector);
+    private static readonly Func<CrewModel, string> KeySelector = crew => crew.Id;
+    private readonly SourceCache<CrewModel, string> _crewCache = new(KeySelector);
         
     public ViewModelActivator Activator { get; } = new();
     
@@ -55,7 +55,7 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
         _navigationService = navigationService;
         _userAlerts = userAlerts;
         
-        PageTitle = "People In Space Maui";
+        PageTitle = "People In Space MAUI";
         
         var crewSort = SortExpressionComparer<CrewModel>
             .Ascending(c => c.Name);
