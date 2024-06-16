@@ -7,7 +7,6 @@ namespace PeopleInSpaceMaui;
 public partial class App : Application
 {
     private readonly INetworkStatusObserver _networkStatusObserver;
-    private readonly IDisposable _networkStatusSubscription;
     private readonly IUserAlerts _userAlerts;
     private readonly IConnectivity _connectivity;
 
@@ -23,7 +22,7 @@ public partial class App : Application
         _userAlerts = serviceProvider.GetRequiredService<IUserAlerts>();
         _connectivity = serviceProvider.GetRequiredService<IConnectivity>();
         
-        _networkStatusSubscription = _networkStatusObserver.Start();
+        _networkStatusObserver.Start();
         
         _networkStatusObserver.ConnectivityNotifications.Subscribe(networkAccess =>
         {
@@ -56,6 +55,6 @@ public partial class App : Application
 
     protected override void CleanUp()
     {
-        _networkStatusSubscription?.Dispose();
+        _networkStatusObserver.Dispose();
     }
 }

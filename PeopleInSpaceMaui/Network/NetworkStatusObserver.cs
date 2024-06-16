@@ -1,28 +1,24 @@
-
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using ReactiveUI;
 
 namespace PeopleInSpaceMaui.Network;
 
-public interface INetworkStatusObserver
+public interface INetworkStatusObserver: IDisposable
 {
-    IDisposable Start();
-
+    void Start();
     IObservable<NetworkAccess> ConnectivityNotifications { get; }
 }
 
-
-
-public class NetworkStatusObserver(IConnectivity connectivity) : INetworkStatusObserver, IDisposable
+public class NetworkStatusObserver(IConnectivity connectivity) : INetworkStatusObserver
 {
-    readonly Subject<NetworkAccess> _connectivityNotifications = new();
-        
+    private readonly Subject<NetworkAccess> _connectivityNotifications = new();
+    private IDisposable? _subscription;
+
     public IObservable<NetworkAccess> ConnectivityNotifications => _connectivityNotifications;
 
-    public IDisposable Start()
+    public void Start()
     {
-        return Observable.FromEventPattern<EventHandler<ConnectivityChangedEventArgs>, ConnectivityChangedEventArgs>(
+        _subscription = Observable.FromEventPattern<EventHandler<ConnectivityChangedEventArgs>, ConnectivityChangedEventArgs>(
                 handler => connectivity.ConnectivityChanged += handler,
                 handler => connectivity.ConnectivityChanged -= handler)
             .Select(eventPattern => eventPattern.EventArgs.NetworkAccess)
@@ -31,7 +27,7 @@ public class NetworkStatusObserver(IConnectivity connectivity) : INetworkStatusO
     
     public void Dispose()
     {
+        _subscription?.Dispose();
         _connectivityNotifications.Dispose();
     }
-    
 }
