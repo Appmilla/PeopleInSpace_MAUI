@@ -1,5 +1,5 @@
 # PeopleInSpace_MAUI
-MAUI version of People In Space
+.Net MAUI version of People In Space
 
 Various ReactiveUI libraries are used to provide a reactive offline-capable app
 
