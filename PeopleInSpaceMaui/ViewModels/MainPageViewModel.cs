@@ -43,6 +43,8 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
     private static readonly Func<CrewModel, string> KeySelector = crew => crew.Id;
     private readonly SourceCache<CrewModel, string> _crewCache = new(KeySelector);
         
+    private static readonly CrewModelComparer CrewComparer = new();
+    
     public ViewModelActivator Activator { get; } = new();
     
     public MainPageViewModel(ISchedulerProvider schedulerProvider,
@@ -103,7 +105,7 @@ public class MainPageViewModel : ReactiveObject, IActivatableViewModel
     {
         _crewCache.Edit(innerCache =>
         {
-            innerCache.AddOrUpdate(crew);
+            innerCache.AddOrUpdate(crew, CrewComparer);
         });
     }
 
